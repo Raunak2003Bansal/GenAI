@@ -1,88 +1,11 @@
-# Zero-One-Few Shot Prompting
+# Zero-, One-, and Few-Shot Prompting
 
-This project demonstrates how to use zero-shot, one-shot, and few-shot prompting patterns with a simple AI-powered complaint routing example.
+This notebook demonstrates zero-shot, one-shot, and few-shot prompts for banking transaction classification and customer complaint routing. It calls DeepSeek through the OpenAI-compatible Python client.
 
-## File
+## Run it
 
-- `Zero_One_Few_Shot_Prompting.ipynb`
+Follow the environment setup and API-key instructions in the repository [README](../README.md). The notebook is [`Zero_One_Few_Shot_Prompting.ipynb`](Zero_One_Few_Shot_Prompting.ipynb).
 
-## What this notebook does
+Set `DEEPSEEK_API_KEY` in the repository-root `.env` file before running model-backed cells. Do not commit that file.
 
-The notebook builds a prompt that instructs a model to act as a banking customer service router. It classifies customer complaints into categories such as:
-
-- Cards
-- Loans
-- NetBanking
-- Accounts
-- Fraud
-- KYC
-
-For each complaint, the model returns a JSON object containing:
-
-- `department`
-- `priority`
-- `suggested_action`
-
-The example includes:
-
-- a system instruction defining the routing behavior
-- multiple few-shot examples
-- a real customer complaint to classify
-- output printing for the final result
-
-## Example workflow
-
-The notebook defines a message list like this:
-
-```python
-complaint_messages = [
-    {
-        "role": "system",
-        "content": (
-            "You are a banking customer service router. "
-            "Classify each complaint and return JSON with: "
-            "department (Cards / Loans / NetBanking / Accounts / Fraud / KYC), "
-            "priority (High / Medium / Low), and a one-line suggested_action."
-        )
-    },
-    {"role": "user", "content": "My credit card was charged twice for the same order at Zomato yesterday."},
-    {"role": "assistant", "content": '{"department": "Cards", "priority": "High", "suggested_action": "Initiate chargeback process and credit provisional refund within 24 hours."}'},
-    # ... more examples ...
-    {"role": "user", "content": "My home loan EMI was deducted twice this month and my account balance is now negative."}
-]
-```
-
-Then it calls:
-
-```python
-result = chat_with_model(complaint_messages)
-print(result)
-```
-
-## Sample output
-
-```json
-{"department": "Loans", "priority": "High", "suggested_action": "Reverse the duplicate EMI deductions and credit the account within 24 hours to prevent further financial impact."}
-```
-
-## Why this matters
-
-This notebook is a practical example of few-shot prompting, where the model is guided by a few labeled examples before being asked to solve a new task. This is useful for:
-
-- intent classification
-- customer support routing
-- document triage
-- structured JSON extraction
-- rule-based assistance with LLMs
-
-## Notes
-
-This notebook assumes a helper function such as:
-
-```python
-def chat_with_model(messages: list[dict], model: str = "qwen3:4b") -> str:
-    response = chat(model=model, messages=messages)
-    return response
-```
-
-Make sure the model provider or chat function is available in your environment before running the notebook.
+The complaint-routing examples ask the model to return structured results such as a department, priority, suggested action, and estimated resolution time. The transaction example compares classifications produced with different prompting styles.
